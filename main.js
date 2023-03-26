@@ -8,21 +8,40 @@ var ntitle = document.getElementById('n-title');
 var nbody = document.getElementById('n-body');
 var tableDiv = document.getElementById('tb1-div');
 var search = document.getElementById('srch');
+var resetBtn = document.getElementById('reset');
 
 
 var noteCount = 0;
 var newNote= '';
+var isUpdate = false;
+var record = '';
+var note = '';
+var body = '';
+
 
 window.onload = updateTable;
 
 form.addEventListener('submit' , addNote);
 search.addEventListener('keyup' , searchNotes);
 items.addEventListener('click' , removeNotes);
+items.addEventListener('click' , viewNUpdateNote);
+resetBtn.addEventListener('click' , resetAll);
 
 function updateTable(){
     if(noteCount>0){
         tableDiv.style.display='';
-        items.appendChild(newNote);
+
+        if(isUpdate){
+            note.firstChild.textContent = ntitle.value;
+            note.lastChild.textContent = nbody.value;
+            isUpdate = false;
+            noteCount--;
+
+        }
+        else{
+            items.appendChild(newNote);
+        }
+        
     }
     else{
         tableDiv.style.display = 'none';
@@ -74,6 +93,9 @@ function addNote(e){
 
 
     }
+
+    resetAll();
+    
 }
 
 function searchNotes(e){
@@ -97,4 +119,33 @@ function searchNotes(e){
     });
 }
 
+function removeNotes(e){
+    if(e.target.id=== 'del'){
+        if(confirm("Are you sure")){
+            var tr = e.target.parentElement.parentElement;
+            items.removeChild(tr);
 
+            noteCount--;
+            if(noteCount===0){
+                updateTable();
+            }
+        }
+    }
+}
+
+function viewNUpdateNote(e){
+    if(e.target.id === 'vw'){
+        record = e.target.parentElement.parentElement;
+        note = record.firstChild;
+        ntitle.value = note.firstChild.textContent;
+        nbody.value = note.lastChild.textContent;
+        isUpdate = true;
+    }
+}
+ function resetAll(){
+    ntitle.value = '';
+    nbody.value = '';
+    isUpdate = false;
+    newNote = '';
+
+ }
